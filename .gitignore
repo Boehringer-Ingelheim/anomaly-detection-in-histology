@@ -1,0 +1,11 @@
+# Pycharm editor settings
+.idea
+.DS_Store
+
+*.pyc
+
+tb_logs/
+results/
+data/
+
+
