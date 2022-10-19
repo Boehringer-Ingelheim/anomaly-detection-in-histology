@@ -22,8 +22,8 @@ positives. Detections in compound treated groups (two right images) correspond t
 
 ```PyTorch```, ```NumPy```, ```Pillow```, ```scikit-learn```
 
-Repository was tested under ```Python 3.9```, using GPU 11GB, and packages versions are listed in the ```requirements.txt```,
-but should also run with earlier Python versions and smaller GPU memory.
+The code in the repository was tested under ```Python 3.9``` with GPU 11GB, and packages' versions are listed in the ```requirements.txt```,
+It, however, should also run with earlier Python versions and smaller GPU memory.
 
 **Experiments** (training image representations and performance evaluation)
 
@@ -31,23 +31,24 @@ but should also run with earlier Python versions and smaller GPU memory.
 
 **Setting up dataset**
 
-* The training dataset with normal tissue of different species, organs, and staining can be downloaded from ```data/train/``` folder from here https://osf.io/gqutd/.
-This dataset is used for training image representations.
+* The training dataset with normal tissue of different species, organs, and staining can be downloaded from ```data/train/``` folder from https://osf.io/gqutd/.
+This dataset was used for training image representations.
 
-* The evaluation dataset with normal mouse liver tissue and tissue with Non-Alcoholic Fatty Liver Disease (NAFLD) can
-be downloaded from ```data/test/``` and ```trained models/``` folders from here: https://osf.io/gqutd/
+* The evaluation dataset with normal mouse liver tissue and mouse tissue with Non-Alcoholic Fatty Liver Disease (NAFLD) can
+be downloaded from ```data/test/``` folder from https://osf.io/gqutd/
 
-* Due to large zip file sizes it is recommended to download each zip file separately.
+* Due to large sizes of zip files it is recommended to download each zip file separately.
 
 * Create the folder structure shown below under the root folder of your repository with the cloned code or in any other location. 
 In the last case set ```_prj_root``` variable to the chosen location in ```configs/cfg_training_cnn.py``` and  ```configs/cfg_anomaly_detector.py```.
 
-* Unzip downloaded data files to the corresponding folders within the created structure
+* Unzip downloaded data files to the corresponding folders within the created folders structure
 
 * If you want to use pre-trained models (instead of training yourself)
-  * download them from ```trained models/``` folders from here: https://osf.io/gqutd/.
-  * unzip and save ```*HE*.pt``` model in ```BIHN_models_HE``` folder, ```*MT*.pt``` model in ```BIHN_models_MT```,
-  and the corresponding ```*.pkl``` models (SVM classifiers) in the corresponding ```anomaly_detection_*``` subfolders. 
+  * download them from ```trained models/``` folder from https://osf.io/gqutd/.
+  * unzip and save ```*HE*.pt``` model into ```BIHN_models_HE``` folder, ```*MT*.pt``` model into ```BIHN_models_MT```,
+  and the corresponding ```*.pkl``` models (SVM classifiers) into the corresponding ```anomaly_detection_*``` subfolders.
+    (see below folders structure)
 
 **Folders structure for project's input and output**  
 ```
@@ -91,18 +92,18 @@ adjust training image representations for anomaly detection in images of tissue 
  
 **Evaluation**
 
-* Set ```cnn_model``` variable in ```configs/cfg_anomaly_detector.py``` to the path to existing trained PyTorch model, which was 
-either automatically generated in folder ```results/stamp/model_name.pt``` during the training step above, or to the path to copied pre-trained model in 
+* Set ```cnn_model``` variable in ```configs/cfg_anomaly_detector.py``` to the path to trained PyTorch model, which was 
+either automatically generated in folder ```results/stamp/model_name.pt``` during the training step above, or to the path to downloaded pre-trained model in 
 folder ```results/BIHN_models_staining/model_name.pt```  (see **setting up dataset** section above). 
 * Run ```python anomaly_detector.py --config configs/cfg_anomaly_detector.py```. 
 
 *Expected performance of anomaly detection with BIHN models*
 
-Staining | Balanced accuracy | AU-ROC | F<sub>1</sub> score
---- |-------------------|--------| -------
- H&E               | 94.20% | 97.33% | 94.09%
- Masson Trichrome  | 97.51% | 99.03% | 97.51%
- 
+| Staining         |  Balanced accuracy  |  AU-ROC  |  F<sub>1</sub> score  |
+|------------------|:-------------------:|:--------:|:---------------------:|
+| H&E              |       94.20%        |  97.33%  |        94.09%         |
+| Masson Trichrome |       97.51%        |  99.03%  |        97.51%         |
+
 **Citing**
 ```markdown
 @article{zingman2022anomaly,

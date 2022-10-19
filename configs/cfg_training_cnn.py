@@ -4,10 +4,10 @@ import os
 test_run = False # set to True if this is the fast test run, no results are saved. Allows checking for no run-time errors
 seed_number = 500
 
-# root folder for inputs (data) and outputs  - defined here under root folder of project code.
-# You can define your own root path for data (outside of the project code)
+# root folder for inputs (data) and outputs  - defined here under the root folder of the project code.
+# You can define your own arbitrary root path for data (outside of the project code)
 _prj_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#_prj_root = '/you root input and output data/'
+#_prj_root = '/your root path to input and output data/'
 
 # path to trained model, tensorboard logs etc.
 path_to_results = os.path.join(_prj_root,"results")
@@ -15,7 +15,7 @@ path_to_results = os.path.join(_prj_root,"results")
 # path to the training data
 path_to_data = os.path.join(_prj_root, "data/train")
 
-# Target combination of specie, organ and staining, the tissue where anomalies should be found
+# Target combination of specie, organ, and staining, the tissue where anomalies should be found
 data_staining = "Masson"
 #data_staining = "HE"
 organ = "Liver"

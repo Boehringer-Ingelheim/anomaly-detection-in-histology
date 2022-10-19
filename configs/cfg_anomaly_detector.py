@@ -7,7 +7,7 @@ seed_number = 500
 
 # root folder for inputs and outputs
 _prj_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#_prj_root = '/you root input and output data/'
+#_prj_root = '/your root path to input and output data/'
 
 
 _code_output_path = os.path.join(_prj_root,"results")
