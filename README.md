@@ -104,6 +104,16 @@ folder ```results/BIHN_models_staining/model_name.pt```  (see **setting up datas
 | H&E              |       94.20%        |  97.33%  |        94.09%         |
 | Masson Trichrome |       97.51%        |  99.03%  |        97.51%         |
 
+* To evaluate other algorithms from [Anomalib library](https://github.com/openvinotoolkit/anomalib) on our dataset with NAFLD pathology,
+please consult Anomalib section *Custom Dataset*.
+
+  Particularly, one needs to set appropriate paths in yaml configuration files of the chosen method located at ```anomalib_root/anomalib/models/method/config_file.yaml```.
+
+  The paths fields to be set in yaml are **normal_dir**, **abnormal_dir**, **normal_test_dir**, which should point to ```./data/train/*mouse_liver/```, ```./data/test/NAFLD_anomaly_*_mouse_liver```,  ```./data/test/normal_*_mouse_liver``` data paths correspondingly.
+The star in paths refers to a particular staining type, ```mt``` or ```he``` you want to experiment with. 
+
+  The **task** field should be set to "classification".
+
 **Citing**
 ```markdown
 @article{zingman2022anomaly,
@@ -114,6 +124,14 @@ folder ```results/BIHN_models_staining/model_name.pt```  (see **setting up datas
       volume={abs/2210.07675},    
       eprinttype = {arXiv},
       url = {https://arxiv.org/abs/2210.07675}
+}
+```
+```markdown
+@online{NAFLD_dataset,
+  author    = {Igor Zingman and Birgit Stierstofer and Fabian Heinemann},
+  title     = {{NAFLD} pathology and healthy tissue samples},  
+  year      = {2022},
+  url       = {https://osf.io/gqutd/},   
 }
 ```
 
