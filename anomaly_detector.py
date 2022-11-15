@@ -355,7 +355,7 @@ else:
     if ans in ('y', 'Y', 'yes', 'YES', 'Yes'):
         new_model = False
 
-        logging.info("previousely trained one class classifier will used")
+        logging.info("previousely trained one-class classifier will used")
 
         # create a new subfolder
         path_folder, path_subfolder = os.path.split(output_path)

@@ -46,8 +46,9 @@ In the last case set ```_prj_root``` variable to the chosen location in ```confi
 
 * If you want to use pre-trained models (instead of training yourself)
   * download them from ```trained models/``` folder from https://osf.io/gqutd/.
-  * unzip and save ```*HE*.pt``` model into ```BIHN_models_HE``` folder, ```*MT*.pt``` model into ```BIHN_models_MT```,
-  and the corresponding ```*.pkl``` models (SVM classifiers) into the corresponding ```anomaly_detection_*``` subfolders.
+  * unzip and save ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762.pt``` model and ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762_training_configuration.pkl``` configuration file into ```BIHN_models_HE``` folder, 
+  ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pt``` model and ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755_training_configuration.pkl``` configuration file into ```BIHN_models_MT``` folder,
+  and the corresponding ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pkl``` and ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762.pkl``` models (SVM classifiers) into the corresponding ```anomaly_detection_*``` subfolders.
     (see below folders structure)
 
 **Folders structure for project's input and output**  
