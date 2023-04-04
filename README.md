@@ -22,7 +22,7 @@ positives. Detections in compound treated groups (two right images) correspond t
 
 ```PyTorch```, ```NumPy```, ```Pillow```, ```scikit-learn```
 
-The code in the repository was tested under ```Python 3.9``` with GPU 11GB, and packages' versions are listed in the ```requirements.txt```,
+The code in the repository was tested under ```Python 3.9``` with GPU 11GB and packages' listed in the ```requirements.txt```.
 It, however, should also run with earlier Python versions and smaller GPU memory.
 
 **Experiments** (training image representations and performance evaluation)
@@ -40,7 +40,8 @@ be downloaded from ```data/test/``` folder from https://osf.io/gqutd/
 * Due to large sizes of zip files it is recommended to download each zip file separately.
 
 * Create the folder structure shown below under the root folder of your repository with the cloned code or in any other location. 
-In the last case set ```_prj_root``` variable to the chosen location in ```configs/cfg_training_cnn.py``` and  ```configs/cfg_anomaly_detector.py```.
+In the last case set ```_prj_root``` variable to the chosen location in ```configs/cfg_training_cnn.py``` and ```configs/cfg_anomaly_detector.py``` configuration files.
+We use .py configuration, not e.g. yaml. This allows more flexibility, is still simple enough, and helpful for prototyping.
 
 * Unzip downloaded data files to the corresponding folders within the created folders structure
 
@@ -106,14 +107,12 @@ folder ```results/BIHN_models_staining/model_name.pt```  (see **setting up datas
 | Masson Trichrome |       97.51%        |  99.03%  |        97.51%         |
 
 * To evaluate other algorithms from [Anomalib library](https://github.com/openvinotoolkit/anomalib) on our dataset with NAFLD pathology,
-please consult Anomalib section *Custom Dataset*.
-
-  Particularly, one needs to set appropriate paths in yaml configuration files of the chosen method located at ```anomalib_root/anomalib/models/method/config_file.yaml```.
-
-  The paths fields to be set in yaml are **normal_dir**, **abnormal_dir**, **normal_test_dir**, which should point to ```./data/train/*mouse_liver/```, ```./data/test/NAFLD_anomaly_*_mouse_liver```,  ```./data/test/normal_*_mouse_liver``` data paths correspondingly.
-The star in paths refers to a particular staining type, ```mt``` or ```he``` you want to experiment with. 
-
-  The **task** field should be set to "classification".
+please consult Anomalib section *Custom Dataset*. Particularly, one needs to set appropriate paths in yaml configuration files of the chosen method located at ```anomalib_root/anomalib/models/method/config_file.yaml```.
+The paths fields to be set in yaml are ```normal_dir```, ```abnormal_dir```, ```normal_test_dir```, which should point to ```./data/train/*mouse_liver/```, ```./data/test/NAFLD_anomaly_*_mouse_liver```,  ```./data/test/normal_*_mouse_liver``` data paths correspondingly.
+The star in paths refers to a particular staining type, ```mt``` or ```he``` you want to experiment with. The ```task``` field should be set to "classification".
+* To evaluate [DPA](https://github.com/ninatu/anomaly_detection) appraoch we adapted ```Camalyon16Dataset``` class, reading images from NAFLD dataset.
+We obtained our best results for DPA using ```camelyon16``` ```wo_pg_unsupervsed``` default configuration with the following parameters tuned ```inner_dims: 16, latent_dim:16``` (for both decoder and encoder, same values for all layers as in the default configuration), ```initial_image_res:256, max_image_res:256, crop_size: 256```.
+Batch size was reduced to 64 to be able to run on 256x256 size images.
 
 **Citing**
 ```markdown
