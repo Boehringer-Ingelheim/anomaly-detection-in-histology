@@ -41,63 +41,67 @@ be downloaded from ```data/test/``` folder from https://osf.io/gqutd/
 
 * Create the folder structure shown below under the root folder of your repository with the cloned code or in any other location. 
 In the last case set ```_prj_root``` variable to the chosen location in ```configs/cfg_training_cnn.py``` and ```configs/cfg_anomaly_detector.py``` configuration files.
-We use .py configuration, not e.g. yaml. This allows more flexibility, is still simple enough, and helpful for prototyping.
+We use *.py configuration files, not e.g. yaml, which allows more flexibility and is convenient for prototyping.
 
 * Unzip downloaded data files to the corresponding folders within the created folders structure
 
 * If you want to use pre-trained models (instead of training yourself)
   * download them from ```trained models/``` folder from https://osf.io/gqutd/.
-  * unzip and save ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762.pt``` model and ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762_training_configuration.pkl``` configuration file into ```BIHN_models_HE``` folder, 
-  ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pt``` model and ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755_training_configuration.pkl``` configuration file into ```BIHN_models_MT``` folder,
-  and the corresponding ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pkl``` and ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762.pkl``` models (SVM classifiers) into the corresponding ```anomaly_detection_*``` subfolders.
-    (see below folders structure)
+  * unzip and save ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762.pt```, ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pt``` CNN models, 
+  the corresponding ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pkl``` and ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762.pkl``` 
+  anomaly detection models (One-cass SVM classifiers), and the corresponding ```EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762_training_configuration.pkl```
+  and ```EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755_training_configuration.pkl```
+  configuration files into e.g. ```BIHN_models``` folder under the project root.
+   
 
-**Folders structure for project's input and output**  
+**Folders structure for project's input**  
 ```
  .
  ├── data
- │   ├── test
- │   │   ├── NAFLD_anomaly_he_mouse_liver
- │   │   ├── NAFLD_anomaly_mt_mouse_liver
- │   │   ├── normal_he_mouse_liver
- │   │   └── normal_mt_mouse_liver
- │   └── train
- │       ├── he_mouse_brain
- │       ├── he_mouse_heart
- │       ├── he_mouse_kidney
- │       ├── he_mouse_liver
- │       ├── he_mouse_lung
- │       ├── he_mouse_pancreas
- │       ├── he_mouse_spleen
- │       ├── he_rat_liver
- │       ├── mt_mouse_brain 
- │       ├── mt_mouse_heart
- │       ├── mt_mouse_kidney
- │       ├── mt_mouse_liver
- │       ├── mt_mouse_lung
- │       ├── mt_mouse_pancreas
- │       ├── mt_mouse_spleen
- │       └── mt_rat_liver
- └── results
-     ├── BIHN_models_HE
-     │   └── anomaly_detection_EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762
-     └── BIHN_models_MT
-         └── anomaly_detection_EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755
+     ├── test
+     │   ├── NAFLD_anomaly_he_mouse_liver
+     │   ├── NAFLD_anomaly_mt_mouse_liver
+     │   ├── normal_he_mouse_liver
+     │   └── normal_mt_mouse_liver
+     └── train
+         ├── he_mouse_brain
+         ├── he_mouse_heart
+         ├── he_mouse_kidney
+         ├── he_mouse_liver
+         ├── he_mouse_lung
+         ├── he_mouse_pancreas
+         ├── he_mouse_spleen
+         ├── he_rat_liver
+         ├── mt_mouse_brain 
+         ├── mt_mouse_heart
+         ├── mt_mouse_kidney
+         ├── mt_mouse_liver
+         ├── mt_mouse_lung
+         ├── mt_mouse_pancreas
+         ├── mt_mouse_spleen
+         └── mt_rat_liver
+ 
 
 ```
 
 **Training**
 
 * Set variable ```data_staining``` in ```configs/cfg_training_cnn.py``` to either ```Masson``` (Massosn's Trichrome staining) or ```HE```(H&E staining) values, which will
-adjust training image representations for anomaly detection in images of tissue stained correspondingly. 
+adjust training image representations for anomaly detection in images of tissue stained correspondingly. If you store the training data in your own location,  update
+ ```path_to_data``` accordingly.
 * Run ```python train_cnn.py --config configs/cfg_training_cnn.py```
+    * The code generates ```train_results/stamp``` folder with trained models (models for each epoch and the best one), confusion matrix, configuration
+    and log files, where *stamp* is a unique number that is set for each run. You can redefine the output 
+    folder in the configuration file ```configs/cfg_training_cnn.py```, if needed, by updating ```path_to_results```.
  
-**Evaluation**
+**Training one-class anomaly classifier and evaluation**
 
-* Set ```cnn_model``` variable in ```configs/cfg_anomaly_detector.py``` to the path to trained PyTorch model, which was 
-either automatically generated in folder ```results/stamp/model_name.pt``` during the training step above, or to the path to downloaded pre-trained model in 
-folder ```results/BIHN_models_staining/model_name.pt```  (see **setting up dataset** section above). 
-* Run ```python anomaly_detector.py --config configs/cfg_anomaly_detector.py```. 
+* Set ```cnn_model``` variable in ```configs/cfg_anomaly_detector.py``` to the relative to root path to the trained CNN model, which was 
+generated in folder ```train_results/stamp/model_name.pt``` during the training step above. Alternatively, you can set an arbitrary path to the downloaded from https://osf.io/gqutd pre-trained CNN model ```*.pt```.
+* If you want to train anomaly model (once-class classifier), set ```ad_model``` to empty string ```""``` or to ```"CNN_location"```. 
+Alternatively, if you download anomaly model ```*.pkl``` from https://osf.io/gqutd/, set ```ad_model``` to its location.
+* Run ```python anomaly_detector.py --config configs/cfg_anomaly_detector.py```. The code will output evaluation results to ```test_results``` folder.
+If anomaly model (once-class classfier) was trained, it will be saved to the folder where CNN model is.  
 
 *Expected performance of anomaly detection with BIHN models*
 

@@ -209,12 +209,11 @@ device = torch.device(cfg.device_name)
 
 set_seed(cfg.seed_number)
 
-string_time = time.strftime("%y%m%d_%H%M%S")
 t_start = perf_counter()
 
 # defining paths and creating output directories
-output_path = cfg.path_to_results + string_time
-output_path_tb = cfg.path_to_results + 'tb/' + string_time
+output_path = cfg.path_to_results + '/' + cfg.string_time
+output_path_tb = cfg.path_to_results + '_tb/' + cfg.string_time
 os.makedirs(output_path_tb)
 os.makedirs(output_path)
 tb_writer = SummaryWriter(output_path_tb)
@@ -324,9 +323,6 @@ for epoch in range(cfg.num_epochs):
         with open(os.path.join(output_path, 'training_cnn_configuration.txt'), 'a') as fh:
             print(model, file=fh)
 
-        # save configuration that can be read together with the models it was used to train
-        pickle_configuraton_as_dictionary(cfg, os.path.join(output_path, 'training_configuration.pkl'))
-
     # saving the resulted model
     model_file_name = cfg.model_name + '_epoch: {}_acc{:.4f}'.format(epoch, epoch_val_acc)
     saved_model_path_full = os.path.join(output_path, model_file_name + '.pt')
@@ -342,20 +338,9 @@ tb_writer.close()
 t_end = perf_counter()
 logging.info('training took {} sec'.format(t_end - t_start))
 
-current_time = str(datetime.datetime.now()).replace(' ', '_')
-
-# saving the last model
-model_file_name = cfg.model_name + '_' + cfg.data_staining + '_' + cfg.organ + '_' + cfg.animal + '_' + current_time + '_acc{:.4f}'.format(epoch_val_acc) + '.pt'
-saved_model_path_full = os.path.join(output_path, model_file_name)
-torch.save(model.state_dict(), saved_model_path_full)
-logging.info('last model was saved to {}'.format(saved_model_path_full))
-model_for_evaluation = NetworkModel(n_classes=n_classes, path_trained_model=saved_model_path_full, dev=device).to(device)
-evaluate_model(val_loader, loss_fun, cfg.n_samples_val, model_for_evaluation)
-plt.savefig(os.path.join(output_path, 'confusion_matrix_last_model.png'))
-
 # saving the best model
-model_file_name = cfg.model_name + '_best_' + cfg.data_staining + '_' + cfg.organ + '_' + cfg.animal + '_' + current_time + '_acc{:.4f}'.format(best_val_acc) + '.pt'
-saved_model_path_full = os.path.join(output_path, model_file_name)
+model_file_name = cfg.model_name + '_' + cfg.data_staining + '_' + cfg.organ + '_' + cfg.animal + '_' + cfg.string_time + '_acc{:.4f}'.format(best_val_acc)
+saved_model_path_full = os.path.join(output_path, model_file_name + '.pt')
 torch.save(best_model_wts, saved_model_path_full)
 logging.info('best model was saved to {}'.format(saved_model_path_full))
 model_for_evaluation = NetworkModel(n_classes=n_classes, path_trained_model=saved_model_path_full, dev=device).to(device)
@@ -363,6 +348,11 @@ evaluate_model(val_loader, loss_fun, cfg.n_samples_val, model_for_evaluation)
 plt.savefig(os.path.join(output_path, 'confusion_matrix_best_model.png'))
 
 logging.info('tensorboard log was saved to {}'.format(output_path_tb))
+
+# save configuration that can be read together with the models it was used to train
+saved_configuration_path_full = os.path.join(output_path, model_file_name + '_training_configuration.pkl')
+pickle_configuraton_as_dictionary(cfg, saved_configuration_path_full )
+logging.info('pickle configuration file was saved to {}'.format(saved_configuration_path_full ))
 
 if hasattr(cfg, 'test_run') and cfg.test_run is True:
     print('output stored in {} and {} will be removed'.format(output_path, output_path_tb))

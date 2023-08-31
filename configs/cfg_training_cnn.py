@@ -1,19 +1,22 @@
 import numpy as _np
-import os
+import time as _time
+import os as _os
+
+string_time = _time.strftime("%y%m%d_%H%M%S")
 
 test_run = False # set to True if this is the fast test run, no results are saved. Allows checking for no run-time errors
 seed_number = 500
 
-# root folder for inputs (data) and outputs  - defined here under the root folder of the project code.
+# root folder for inputs (data) and outputs  - defined here as the root folder of the code repository.
 # You can define your own arbitrary root path for data (outside of the project code)
-_prj_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_prj_root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 #_prj_root = '/your root path to input and output data/'
 
-# path to trained model, tensorboard logs etc.
-path_to_results = os.path.join(_prj_root,"results")
+# path to trained model, tensorboard logs etc. You can define your own arbitrary path.
+path_to_results = _os.path.join(_prj_root, "train_results")
 
-# path to the training data
-path_to_data = os.path.join(_prj_root, "data/train")
+# path to the training data. You can define your own arbitrary path.
+path_to_data = _os.path.join(_prj_root, "data/train")
 
 # Target combination of specie, organ, and staining, the tissue where anomalies should be found
 data_staining = "Masson"
@@ -47,7 +50,7 @@ path_to_tissues = (
     {'folder': path_to_data + "he_rat_liver", 'label': 'he_liver_rat', 'ext': 'png'},
     )
 
-number_of_classes = 16
+number_of_classes = len(set([loc['label'] for loc in path_to_tissues]))
 
 centerloss_classes = 'derived'
 #centerloss_classes = None # do not use centerloss
@@ -86,7 +89,7 @@ model_name = 'EfficientNet_B0_320'
 #model_name = 'VT_B_32'
 
 # arbitrary description of th experiment
-description = 'sampled healthy data'
+description = 'test'
 
 device_name = "cuda:0"
 

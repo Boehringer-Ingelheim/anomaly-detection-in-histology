@@ -2,23 +2,31 @@ import os as _os
 import pickle as _pickle
 
 
-show_non_liver = False # used for t-sne visualization of non liver data from auxiliary task
+show_non_liver = False  # used for t-sne visualization of non liver data from auxiliary task
 seed_number = 500
 
 # root folder for inputs and outputs
 _prj_root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 #_prj_root = '/your root path to input and output data/'
 
-# results will be written here. This path should also contain trained cnn (BIHN) model (results path for training_cnn.py)
-_code_output_path = _os.path.join(_prj_root,"results/")
+# the evaluation results will be written here
+output_path = _os.path.join(_prj_root, 'test_results/')
 
 _train_data = _os.path.join(_prj_root, "data/train/")
 _test_data = _os.path.join(_prj_root, "data/test/")
 
-aug_saturation=(0.4, 1.6)
-aug_hue= (-0.05, 0.05) #(-0.01, 0.01)
+ad_model = "CNN_location" # anomaly detection model will be taken from the folder where CNNmodel is. If anomaly model with the same name as CNN model (except file extention) does not exist, it will be trained and saved at this location.
+#ad_model = "/BIHNmodels/EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pkl"
+#ad_model = "" # new anomaly detection model will be trained
 
-augmentation = True #True  # augment (one class) training examples (useful for larger models like densenet)
+#cnn_model = '' # ImageNet pretrained
+#cnn_model = /BIHNmodels/EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pt"
+cnn_model =  _os.path.join(_prj_root, 'train_results/30830_124948/EfficientNet_B0_320_Masson_Liver_Mouse_230830_124948_acc0.9339.pt')
+
+aug_saturation=(0.4, 1.6)
+aug_hue= (-0.05, 0.05)
+
+augmentation = True # if True  augments (one class) training examples (useful for larger models like densenet)
 
 csv_liver_tissue_anomalies = 'liver_tissue_anomalies.csv'
 csv_liver_tissue_testnormals = 'liver_tissue_testnormals.csv'
@@ -50,31 +58,20 @@ save_n_FN = 100 # number of falsely classified anomaly patch images to be saved
 save_n_FP = 100 # number of falsely classified normal patch examples to be saved
 
 description = "running with pre-trained BIHN models"
-anomaly_model_folder = 'anomaly_detection' # prefix of subfolder where results will be saved
 
+if ad_model == 'CNN_location':
+    ad_model, _ = _os.path.splitext(cnn_model)
+    ad_model = ad_model + '.pkl'
 
-#cnn_model = '' # ImageNet pretrained
-#cnn_model = _code_output_path + "BIHN_models_MT/EfficientNet_B0_320_Masson_Liver_Mouse_acc0.9755.pt"
-cnn_model = _code_output_path + "BIHN_models_HE/EfficientNet_B0_320_HE_Liver_Mouse_acc0.9762.pt"
-#cnn_model = _code_output_path + "220724_000714/EfficientNet_B0_320_best_Masson_Liver_Mouse_2022-07-24_03:07:38.540309_acc0.9755.pt" # comparison to NAS study
-#cnn_model = _code_output_path + "220724_000900/EfficientNet_B0_320_best_HE_Liver_Mouse_2022-07-24_03:06:00.582888_acc0.9762.pt" # tox study
-
-
-# getting parameters from training_cnn configuration file (if was saved)
-_path_to_configuration_pkl = _os.path.split(cnn_model)[0]
-if _os.path.isfile(_os.path.join(_path_to_configuration_pkl, 'training_configuration.pkl')):
-    _path_to_configuration_pkl = _os.path.join(_path_to_configuration_pkl, 'training_configuration.pkl')
-else:
-    _path_to_configuration_pkl = _os.path.splitext(cnn_model)[0] + '_training_configuration.pkl'
+# getting parameters from training_cnn configuration file
+_path_to_configuration_pkl = _os.path.splitext(cnn_model)[0] + '_training_configuration.pkl'
 
 try:
     _pkl_dic = _pickle.load(open(_path_to_configuration_pkl, 'rb'))
 except FileNotFoundError:
-    print("Meta data cannot be read. Probable reason: the old version of the trained model did not include meta data, or no model was given")
-    print("Using parameters from testing configuration file if defined")
-    pass
+    raise RuntimeError("Meta data cannot be read. Probable reason: the old version of the trained model did not include meta data, or no model was given")
 else:
-    print('taking parameters from saved along the model meta data from training organs classifier')
+    print('taking parameters from saved along the model meta data: {}'.format(_path_to_configuration_pkl))
     n_trained_classes = int(_pkl_dic['number_of_classes'])
 
     normalize_mean = _pkl_dic['normalize_mean']
@@ -87,10 +84,7 @@ else:
 
     patch_size = _pkl_dic['patch_size']
 
-    try:
-        animal = _pkl_dic['animal']
-    except:
-        pass
+    animal = _pkl_dic['animal']
 
     try:
         data_staining = _pkl_dic['data_staining']
@@ -104,7 +98,7 @@ else:
         elif _pkl_dic['centerloss_classes'] == 'liver_rat':
             data_staining = "Masson"
         else:
-            raise RuntimeError("Warning: trained center loss class is not valid")
+            raise RuntimeError("Error: trained center loss class is not valid")
 
 # ----data--------
 paths_non_liver_tissues_test = ()
@@ -148,7 +142,6 @@ elif data_staining == "HE":
         {'folder': _test_data + "NAFLD_anomaly_he_mouse_liver", 'label': 'NAS anomaly', 'ext': 'png'},
 
     )
-
 
 paths_normal = () # healthy for training one class classifier
 if data_staining == "Masson" and animal == "Mouse":
