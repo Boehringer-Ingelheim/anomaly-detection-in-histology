@@ -118,6 +118,10 @@ The star in paths refers to a particular staining type, ```mt``` or ```he``` you
 We obtained our best results for DPA using ```camelyon16``` ```wo_pg_unsupervsed``` default configuration with the following parameters tuned ```inner_dims: 16, latent_dim:16``` (for both decoder and encoder, same values for all layers as in the default configuration), ```initial_image_res:256, max_image_res:256, crop_size: 256```.
 Batch size was reduced to 64 to be able to run on 256x256 size images.
 
+
+* In oder to use pretrained BIHN models (*.pt files that can be downloaded from https://osf.io/gqutd/) to generate 
+feature representations of histopathological images (Masson or H&E) for your own tasks, you can consult the code example in model_use_example.py. 
+
 **Citing**
 ```markdown
 @article{zingman2022anomaly,
