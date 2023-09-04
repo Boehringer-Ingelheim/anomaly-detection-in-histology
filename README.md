@@ -94,12 +94,11 @@ adjust training image representations for anomaly detection in images of tissue 
     and log files, where *stamp* is a unique number that is set for each run. You can redefine the output 
     folder in the configuration file ```configs/cfg_training_cnn.py```, if needed, by updating ```path_to_results```.
  
-**Training one-class anomaly classifier and evaluation**
+**Evaluation**
 
 * Set ```cnn_model``` variable in ```configs/cfg_anomaly_detector.py``` to the relative to root path to the trained CNN model, which was 
 generated in folder ```train_results/stamp/model_name.pt``` during the training step above. Alternatively, you can set an arbitrary path to the downloaded from https://osf.io/gqutd pre-trained CNN model ```*.pt```.
-* If you want to train anomaly model (once-class classifier), set ```ad_model``` to empty string ```""``` or to ```"CNN_location"```. 
-Alternatively, if you download anomaly model ```*.pkl``` from https://osf.io/gqutd/, set ```ad_model``` to its location.
+* If you've downloaded an anomaly model ```*.pkl``` from https://osf.io/gqutd/, set ```ad_model``` to its location. Alternatively, if you want to train anomaly model on your own (once-class classifier), set ```ad_model``` to empty string ```""``` or to ```"CNN_location"```.
 * Run ```python anomaly_detector.py --config configs/cfg_anomaly_detector.py```. The code will output evaluation results to ```test_results``` folder.
 If anomaly model (once-class classfier) was trained, it will be saved to the folder where CNN model is.  
 
@@ -119,8 +118,10 @@ We obtained our best results for DPA using ```camelyon16``` ```wo_pg_unsupervsed
 Batch size was reduced to 64 to be able to run on 256x256 size images.
 
 
-* In oder to use pretrained BIHN models (*.pt files that can be downloaded from https://osf.io/gqutd/) to generate 
-feature representations of histopathological images (Masson or H&E) for your own tasks, you can consult the code example in model_use_example.py. 
+**Use of pretrained BIHN models in your own projects**
+
+In oder to use pretrained BIHN models (*.pt files that can be downloaded from https://osf.io/gqutd/) to generate 
+feature representations of histopathological images (Masson or H&E) for your own tasks, you can consult the code example in ```model_use_example.py```. 
 
 **Citing**
 ```markdown
