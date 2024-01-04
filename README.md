@@ -3,8 +3,8 @@
 -------
 
 This repository contains Pytorch implementation of **training image representations** and **performance evaluation** of the approach introduced in
-*Zingman et al. ["Learning image representations for anomaly detection: application to discovery of
-histological alterations in drug development", CoRR, 2022.](https://arxiv.org/abs/2210.07675)*
+*I. Zingman, B. Stierstorfer, C. Lempp, F. Heinemann. ["Learning image representations for anomaly detection: application to discovery of
+histological alterations in drug development", Medical Image Analysis, 2024.](https://www.sciencedirect.com/science/article/pii/S1361841523003274#da1)*
 
 The paper develops a method for anomaly detection in whole slide images of stained tissue samples in order to routinely screen histopathological data for abnormal alterations in tissue. 
 
